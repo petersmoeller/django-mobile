@@ -1,6 +1,11 @@
 Changlog
 ========
 
+0.2.5 (pm)
+-----
+
+* Added a default tablet flavour and device check for iPad & android. So now there's three flavours, mobile, full & tablet.
+
 0.2.4
 -----
 
