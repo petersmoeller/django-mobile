@@ -38,10 +38,10 @@ class MobileDetectionMiddleware(object):
     user_agents_test_search = u"(?:%s)" % u'|'.join((
         'up.browser', 'up.link', 'mmp', 'symbian', 'smartphone', 'midp',
         'wap', 'phone', 'windows ce', 'pda', 'mobile', 'mini', 'palm',
-        'netfront', 'opera mobi', 'android',
+        'netfront', 'opera mobi',
     ))
     user_agents_exception_search = u"(?:%s)" % u'|'.join((
-        'ipad',
+        'ipad', 'android',
     ))
     http_accept_regex = re.compile("application/vnd\.wap\.xhtml\+xml", re.IGNORECASE)
 
@@ -53,29 +53,28 @@ class MobileDetectionMiddleware(object):
 
     def process_request(self, request):
         is_mobile = False
+        is_tablet = False
 
         if request.META.has_key('HTTP_USER_AGENT'):
             user_agent = request.META['HTTP_USER_AGENT']
-
-            # Test common mobile values.
-            if self.user_agents_test_search_regex.search(user_agent) and \
-                not self.user_agents_exception_search_regex.search(user_agent):
+            if self.user_agents_test_search_regex.search(user_agent) and not self.user_agents_exception_search_regex.search(user_agent):
                 is_mobile = True
+            elif self.user_agents_exception_search_regex.search(user_agent):
+                is_tablet = True
             else:
                 # Nokia like test for WAP browsers.
                 # http://www.developershome.com/wap/xhtmlmp/xhtml_mp_tutorial.asp?page=mimeTypesFileExtension
-
                 if request.META.has_key('HTTP_ACCEPT'):
                     http_accept = request.META['HTTP_ACCEPT']
                     if self.http_accept_regex.search(http_accept):
                         is_mobile = True
-
             if not is_mobile:
                 # Now we test the user_agent from a big list.
                 if self.user_agents_test_match_regex.match(user_agent):
                     is_mobile = True
-
         if is_mobile:
             set_flavour(settings.DEFAULT_MOBILE_FLAVOUR, request)
+        elif is_tablet:
+            set_flavour(settings.DEFAULT_TABLET_FLAVOUR, request)
         else:
             set_flavour(settings.FLAVOURS[0], request)
