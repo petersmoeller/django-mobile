@@ -27,7 +27,7 @@ class MobileDetectionMiddleware(object):
         "keji", "leno", "lg-c", "lg-d", "lg-g", "lge-",
         "maui", "maxo", "midp", "mits", "mmef", "mobi",
         "mot-", "moto", "mwbp", "nec-", "newt", "noki",
-        "xda",  "palm", "pana", "pant", "phil", "play",
+        "xda", "palm", "pana", "pant", "phil", "play",
         "port", "prox", "qwap", "sage", "sams", "sany",
         "sch-", "sec-", "send", "seri", "sgh-", "shar",
         "sie-", "siem", "smal", "smar", "sony", "sph-",
@@ -35,31 +35,34 @@ class MobileDetectionMiddleware(object):
         "upg1", "upsi", "vk-v", "voda", "wap-", "wapa",
         "wapi", "wapp", "wapr", "webc", "winw", "winw",
         "xda-",)
-    user_agents_test_search = u"(?:%s)" % u'|'.join((
+    user_agents_mobile_search = u"(?:%s)" % u'|'.join((
         'up.browser', 'up.link', 'mmp', 'symbian', 'smartphone', 'midp',
         'wap', 'phone', 'windows ce', 'pda', 'mobile', 'mini', 'palm',
         'netfront', 'opera mobi',
     ))
-    user_agents_exception_search = u"(?:%s)" % u'|'.join((
-        'ipad', 'android',
+    user_agents_mobile_exception = u"(?:%s)" % u'|'.join((
+        'ipad',
+    ))
+    user_agents_tablet_search = u"(?:%s)" % u'|'.join((
+        'ipad', 'android', 'kindle', 'crios', 'hp-tablet',
     ))
     http_accept_regex = re.compile("application/vnd\.wap\.xhtml\+xml", re.IGNORECASE)
 
     def __init__(self):
         user_agents_test_match = r'^(?:%s)' % '|'.join(self.user_agents_test_match)
         self.user_agents_test_match_regex = re.compile(user_agents_test_match, re.IGNORECASE)
-        self.user_agents_test_search_regex = re.compile(self.user_agents_test_search, re.IGNORECASE)
-        self.user_agents_exception_search_regex = re.compile(self.user_agents_exception_search, re.IGNORECASE)
+        self.user_agents_mobile_search_regex = re.compile(self.user_agents_mobile_search, re.IGNORECASE)
+        self.user_agents_mobile_exception_regex = re.compile(self.user_agents_mobile_exception, re.IGNORECASE)
+        self.user_agents_tablet_search_regex = re.compile(self.user_agents_tablet_search, re.IGNORECASE)
 
     def process_request(self, request):
-        is_mobile = False
-        is_tablet = False
+        is_mobile, is_tablet = False, False
 
-        if request.META.has_key('HTTP_USER_AGENT'):
+        if 'HTTP_USER_AGENT' in request.META:
             user_agent = request.META['HTTP_USER_AGENT']
-            if self.user_agents_test_search_regex.search(user_agent) and not self.user_agents_exception_search_regex.search(user_agent):
+            if self.user_agents_mobile_search_regex.search(user_agent) and not self.user_agents_mobile_exception_regex.search(user_agent):
                 is_mobile = True
-            elif self.user_agents_exception_search_regex.search(user_agent):
+            elif self.user_agents_tablet_search_regex.search(user_agent):
                 is_tablet = True
             else:
                 # Nokia like test for WAP browsers.
