@@ -56,6 +56,6 @@ setup(
         'django_mobile.cache',
     ],
     install_requires = ['setuptools'],
-    tests_require = ['Django', 'mock'],
+    #tests_require = ['Django', 'mock'],
     #test_suite = 'django_mobile_tests.runtests.runtests',
 )
