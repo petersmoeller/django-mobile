@@ -35,7 +35,7 @@ long_description = UltraMagicString(long_description)
 setup(
     name = 'django-mobile',
     version = '0.2.5',
-    url = 'https://github.com/gregmuellegger/django-mobile',
+    url = 'https://github.com/petersmoeller/django-mobile',
     license = 'BSD',
     description = u'Detect mobile browsers and serve different template flavours to them.',
     long_description = long_description,
@@ -57,5 +57,5 @@ setup(
     ],
     install_requires = ['setuptools'],
     tests_require = ['Django', 'mock'],
-    test_suite = 'django_mobile_tests.runtests.runtests',
+    #test_suite = 'django_mobile_tests.runtests.runtests',
 )
