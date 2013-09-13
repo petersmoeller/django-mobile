@@ -38,7 +38,7 @@ class MobileDetectionMiddleware(object):
     user_agents_mobile_search = u"(?:%s)" % u'|'.join((
         'up.browser', 'up.link', 'mmp', 'symbian', 'smartphone', 'midp',
         'wap', 'phone', 'windows ce', 'pda', 'mobile', 'mini', 'palm',
-        'netfront', 'opera mobi',
+        'netfront', 'opera mobi', 'IEMobile',
     ))
     user_agents_mobile_exception = u"(?:%s)" % u'|'.join((
         'ipad',
